@@ -2,8 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 
 // GET - Obtener una petición específica
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const result = await query(
       `SELECT 
         p.*,
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       LEFT JOIN petition_attachments pa ON p.id = pa.petition_id
       WHERE p.id = $1
       GROUP BY p.id`,
-      [params.id],
+      [id],
     )
 
     if (result.rows.length === 0) {

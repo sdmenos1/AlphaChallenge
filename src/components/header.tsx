@@ -10,7 +10,7 @@ import logo from "../../public/logo.png";
 interface HeaderProps {
   isLoggedIn: boolean;
   userEmail: string;
-  userFullName: string;
+  userFullName?: string;
   onLogin: () => void;
   onLogout: () => void;
 }

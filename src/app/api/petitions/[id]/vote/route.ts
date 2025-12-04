@@ -3,7 +3,7 @@ import { query } from "@/lib/db"
 import { verifyToken } from "@/lib/auth"
 
 // POST - Votar por una petición
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Verificar autenticación
     const authHeader = request.headers.get("authorization")
@@ -18,7 +18,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ error: "Token inválido" }, { status: 401 })
     }
 
-    const petitionId = params.id
+    const { id } = await params
+    const petitionId = id
 
     // Verificar si ya votó
     const existingVote = await query("SELECT id FROM votes WHERE user_id = $1 AND petition_id = $2", [
